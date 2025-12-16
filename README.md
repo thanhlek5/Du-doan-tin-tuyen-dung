@@ -30,7 +30,7 @@ Dữ liệu bao gồm 17.880 tin tuyển dụng thực tế, trong đó có kho�
 + Làm slide ppt.
 
 ### Cấu trúc thư mục
-
+** Nhớ tạo thư mục tên data để lưu dữ liệu không để file dữ liệu ở bên ngoài **
 ```
 ├── configs  ## Thư mục chứa các siêu tham số của mô hình dùng để tinh chỉnh
 |   |──file.json
