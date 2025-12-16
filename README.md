@@ -31,8 +31,6 @@ Dữ liệu bao gồm 17.880 tin tuyển dụng thực tế, trong đó có kho�
 
 ### Cấu trúc thư mục
 
-**Root Path:** `d:\PYTHON\data_mining\fraud-detecion-project`
-
 ```
 ├── configs  ## Thư mục chứa các siêu tham số của mô hình dùng để tinh chỉnh
 |   |──file.json
