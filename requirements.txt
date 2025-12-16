@@ -8,4 +8,4 @@ xgboost
 shap          
 jupyterlab
 optuna
-optuna-intergration
+optuna-integration
