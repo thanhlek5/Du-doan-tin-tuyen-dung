@@ -9,3 +9,4 @@ shap==0.42.1
 jupyterlab==4.0.5
 optuna
 optuna-intergration
+nltk 
