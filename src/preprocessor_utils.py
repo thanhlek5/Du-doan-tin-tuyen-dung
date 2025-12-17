@@ -16,15 +16,7 @@ if project_root not in sys.path:
     
     
 
-try:
-    nltk.data.find('tokenizers/punkt')
-    nltk.data.find('corpora/stopwords')
-except LookupError:
-    nltk.download('punkt')
-    nltk.download('stopwords')
-    nltk.download('punkt_tab')
-stop_words = set(stopwords.words('english'))
-
+STOPWORDS = set(spacy.lang.en.stop_words.STOP_WORDS)
 
 def split_data(df:pd.DataFrame) ->tuple:
     x= df.drop("fraudulent",axis= 1)
@@ -35,6 +27,11 @@ def load_preprocessor(x) -> Any:
     path_pre = os.path.join(project_root,"models","preprocessor.pkl")
     preprocessor = joblib.load(path_pre)
     return preprocessor.transform(x)
+
+#  lấy được ở phần analysis
+whitelist = {'show', 'unless', 'me', 'anywhere', 'he', 'again', 'from', 'my', 'may', 'before', 'full', 'name', 'done', 'nothing', 'others', 'per', 'above', 'below', 'six', 'your', 'down', 'own', 'hence', 'thereby', 'within', 'call', 'ours', 'third', 'must', 'off', 'say', 'ten', 'eight', 'his', 'should', 'serious', 'any', 'otherwise', 'mostly', 'much', 'several', 'under', 'no', 'amount', 'toward', 'amongst', 'via', 'mine', 'hundred', 'whose'}
+final_stopwords = STOPWORDS - whitelist
+
 
 def clear_text(text:str) ->str:
     """
@@ -47,7 +44,7 @@ def clear_text(text:str) ->str:
     text = re.sub(r'http\S+','',text)
     text = re.sub(r'[^a-zA-Z0-9]', ' ',text)
     tokens = nltk.word_tokenize(text)
-    tokens = [word for word in tokens if word not in stop_words]
+    tokens = [word for word in tokens if word not in final_stopwords]
     clear_text = " ".join(tokens)
     return clear_text
 
