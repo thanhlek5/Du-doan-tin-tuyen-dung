@@ -52,6 +52,12 @@ def normalize_text(text):
     Chuẩn hóa văn bản
     """
     doc = nlp(text)
-    normalized_words = [token.lemma_ for token in doc]
+    normalized_words = [
+    token.lemma_
+    for token in doc
+    if not token.is_punct
+    and not token.is_space
+    and token.lemma_ != "-PRON-"
+    ]
     normalized_text = ' '.join(normalized_words)
     return normalized_text

@@ -145,13 +145,10 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
         # (Chỉ dùng nội bộ để tìm features, không ghi đè cột description gốc)
         temp_text = X['description'].fillna('') + " " + X['requirements'].fillna('')
         
-        # 1. TẠO CỘT 'chain' (Phát hiện mã rác bot spam)
-        garbage_char = '0fa3f7c5e23a16de16a841e368006cae916884407d90b154dfef3976483a71ae'
-        X['chain'] = temp_text.apply(lambda x: 1 if garbage_char in str(x) else 0)
         
         # 2. TẠO CỘT 'key_note' (Từ khóa mạo danh Dầu khí)
-        keys = ['aker', 'subsea', 'action', 'novation']
-        pattern = '|'.join(keys) # Tạo regex: "aker|subsea|action..."
+        keys = ["petroleum", "oil gas","oil energy","data entry","typing","clerical","work home","training provided"," encouraged", "administrative assistant" ,"clerk" ]
+        pattern = r'('+'|'.join(map(re.escape,keys)) + r')' # Tạo regex: "aker|subsea|action..."
         X['key_note'] = temp_text.str.contains(pattern, case=False, na=False).astype(int)
         
         return X
@@ -187,7 +184,7 @@ def create_preprocessing_pipeline(vectorizer_type='tfidf'):
                 ('cleaner', TextCleaner()), 
                 ('vec', vec_step)
             ]), text_cols),
-            ('flags', 'passthrough', ['key_note', 'chain'])
+            ('flags', 'passthrough', ['key_note'])
         ],
         remainder='drop'
     )
