@@ -6,7 +6,6 @@ import sys
 from typing import Any
 import re
 import nltk
-from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import spacy
 nlp = spacy.load("en_core_web_sm")

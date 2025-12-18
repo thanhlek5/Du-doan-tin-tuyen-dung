@@ -49,6 +49,41 @@ Dữ liệu bao gồm 17.880 tin tuyển dụng thực tế, trong đó có kho�
 └── requirements.txt ## các thư việc sử dụng
 ```
 
+## Tạo pipeline cho việc Tiền xử lý dữ liệu. 
+### xử lý mất cân bằng dữ liệu (imbalanced)
+
+Bộ dữ liệu bị mất cân bằng khá cao (17.200/800) nên ta cần đưa ra phương án để xử lý
+
+Ta có 2 hướng để xử lý:
+
+**Hướng 1** 
+Ta sẽ smote dữ liệu giả mạo lên cho gần bằng với với dữ liệu không giả mạo -> ta sẽ thêm tớ 16.400 dữ liệu mới tỷ lệ 1:20 
+
+rủi ro: 
++ nếu chọn cách này nghĩa là ta đang ép thuật toán bịa ra rất nhiều dữ liệu ảo từ 1 lượng thông tin rất ít -> mô hình có khả năng cao sẽ học thuộc những dữ liệu ảo đó -> khả năng học vẹt rất cao. 
++ tốc độ và tài nguyên vì 17.880 (dữ liệu thật) và 17.200 (dứ liệu ảo) -> 34.400 dòng dữ liệu.
+
+**Hướng 2**
+Ta sẽ kết hợp giũa smote và undersampling: 
+ta sẽ smote dữ liệu giả mạo lên 5 lần là tỷ lệ 1:5 và sẽ undersampling dữ liệu không giả mạo xuống gần bằng với dữ liệu giả mạo.
+-> 1 pipeline cho hướng 1 và 1 pipeline cho hướng 2
+### Xử lý giá trị trống:
+ta sẽ chia làm 3 nhóm dữ liệu: 
++ số -> thay bằng median (trung vị) 
++ chữ -> thay bằng "unknow"
++ văn bản -> thay bằng "missing"
+### chỉnh sửa, thêm và bớt cột (features)
++ Bỏ cột job_id
++ Thêm cột keynote và chain -> giá trị là 0 và 1 
++ ta sẽ gộp tất cả các features chữ và văn bbản vào cột mới là combined_text
+### chuẩn hóa dữ liệu:
++ Với dữ liệu dạng số ta không cần thiết phải chuẩn hóa nữa vì chúng chỉ có 2 giá trị là `0 và 1`.
++ với  cột combined_text ta sẽ làm sạch chúng (bỏ các kí tự đặc biệt) -> chuẩn hóa (bỏ các từ stopwords,...) -> vector hóa chúng.
++ ở phần vector hóa ta có rât nhiều thuật toán và mô hình để xử lý  countVector, TF-IDF, Word2Vec.
+-> tạo pipeline cho 3 cái trên 1 cái là dùng CountVector, 1 cái dùng TF-IDF, 1 cái dùng Word2Vec 
+
+tổng là có 5 pipeline tất cả
+
 
 
 
