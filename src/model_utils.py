@@ -50,6 +50,8 @@ def loadConfig(config_path : str) ->dict:
     """
     Load config
     """
+    if config_path is None:
+        return {}
     if not os.path.exists(config_path):
         print(f"Doesn't exist this config: {config_path}. using default params")
         return {}
@@ -92,7 +94,7 @@ def get_model_instance(model_name, params = None) -> Any:
     raise ValueError("the selected model isn't supported")
 
 def trainModel(x_train: pd.DataFrame,y_train: pd.DataFrame,model_name: str, config_path : str = None) -> Any:
-    if config_path is None: params = None
+    if config_path is None: params = {}
     params = loadConfig(config_path = config_path)
     name = model_name.lower()
     try:
