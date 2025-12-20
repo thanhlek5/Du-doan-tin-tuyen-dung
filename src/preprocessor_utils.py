@@ -22,42 +22,46 @@ def split_data(df:pd.DataFrame) ->tuple:
     y = df['fraudulent']
     return x,y
 
-def load_preprocessor(x) -> Any:
+def load_preprocess(path:str) -> Any:
+    return joblib.load(path)
+
+
+def transform_preprocessor(x) -> Any:
     path_pre = os.path.join(project_root,"models","preprocessor.pkl")
     preprocessor = joblib.load(path_pre)
     return preprocessor.transform(x)
 
-#  lấy được ở phần analysis
-whitelist = {'show', 'unless', 'me', 'anywhere', 'he', 'again', 'from', 'my', 'may', 'before', 'full', 'name', 'done', 'nothing', 'others', 'per', 'above', 'below', 'six', 'your', 'down', 'own', 'hence', 'thereby', 'within', 'call', 'ours', 'third', 'must', 'off', 'say', 'ten', 'eight', 'his', 'should', 'serious', 'any', 'otherwise', 'mostly', 'much', 'several', 'under', 'no', 'amount', 'toward', 'amongst', 'via', 'mine', 'hundred', 'whose'}
-final_stopwords = STOPWORDS - whitelist
+# #  lấy được ở phần analysis
+# whitelist = {'show', 'unless', 'me', 'anywhere', 'he', 'again', 'from', 'my', 'may', 'before', 'full', 'name', 'done', 'nothing', 'others', 'per', 'above', 'below', 'six', 'your', 'down', 'own', 'hence', 'thereby', 'within', 'call', 'ours', 'third', 'must', 'off', 'say', 'ten', 'eight', 'his', 'should', 'serious', 'any', 'otherwise', 'mostly', 'much', 'several', 'under', 'no', 'amount', 'toward', 'amongst', 'via', 'mine', 'hundred', 'whose'}
+# final_stopwords = STOPWORDS - whitelist
 
 
-def clear_text(text:str) ->str:
-    """
-    làm sạch văn bảng 
-    """
-    if not isinstance(text,str):
-        return ""
-    text = text.lower()
-    text = re.sub(r'<.*?>',"",text)
-    text = re.sub(r'http\S+','',text)
-    text = re.sub(r'[^a-zA-Z0-9]', ' ',text)
-    tokens = nltk.word_tokenize(text)
-    tokens = [word for word in tokens if word not in final_stopwords]
-    clear_text = " ".join(tokens)
-    return clear_text
+# def clear_text(text:str) ->str:
+#     """
+#     làm sạch văn bảng 
+#     """
+#     if not isinstance(text,str):
+#         return ""
+#     text = text.lower()
+#     text = re.sub(r'<.*?>',"",text)
+#     text = re.sub(r'http\S+','',text)
+#     text = re.sub(r'[^a-zA-Z0-9]', ' ',text)
+#     tokens = nltk.word_tokenize(text)
+#     tokens = [word for word in tokens if word not in final_stopwords]
+#     clear_text = " ".join(tokens)
+#     return clear_text
 
-def normalize_text(text):
-    """
-    Chuẩn hóa văn bản
-    """
-    doc = nlp(text)
-    normalized_words = [
-    token.lemma_
-    for token in doc
-    if not token.is_punct
-    and not token.is_space
-    and token.lemma_ != "-PRON-"
-    ]
-    normalized_text = ' '.join(normalized_words)
-    return normalized_text
+# def normalize_text(text):
+#     """
+#     Chuẩn hóa văn bản
+#     """
+#     doc = nlp(text)
+#     normalized_words = [
+#     token.lemma_
+#     for token in doc
+#     if not token.is_punct
+#     and not token.is_space
+#     and token.lemma_ != "-PRON-"
+#     ]
+#     normalized_text = ' '.join(normalized_words)
+#     return normalized_text
