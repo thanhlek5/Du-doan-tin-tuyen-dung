@@ -1,6 +1,6 @@
 import os 
 import sys 
-project_root = os.path.dirname(os.path.dirname(__file__))
+project_root = os.path.abspath(os.path.join(os.getcwd(),".."))
 if project_root not in sys.path:
     sys.path.append(project_root)
 from src.model_utils import trainModel, tuneModel, saveModel, save_params_to_json
@@ -13,13 +13,13 @@ import json
 import shap
 import matplotlib.pyplot as plt
 from sklearn.base import clone
-
+import joblib
 
 # path configs
-path_test = os.path.join(project_root,"data","data_train.csv")
-path_pre_data_tf = os.path.join(project_root, "models","Preprocess_tfidf_data.pkl")
-path_pre_pipe_tf = os.path.join(project_root,"models","Preprocess_tfidf_pipeline.pkl")
-path_config = os.path.join(project_root,"configs","lr_rcv.json")
+path_test = os.path.join(project_root,"fraud-detection-post","data","data_test.csv")
+path_pre_data_tf = os.path.join(project_root,"fraud-detection-post", "models","Preprocess_tfidf_data.pkl")
+path_pre_pipe_tf = os.path.join(project_root,"fraud-detection-post","models","Preprocess_tfidf_pipeline.pkl")
+path_config = os.path.join(project_root,"fraud-detection-post","configs","lr_rcv.json")
 
 with open(path_config, 'r', encoding="utf-8") as f:
     param = json.load(f)
@@ -119,3 +119,73 @@ else:
     
 path_model = os.path.join(project_root,"models","models_lr.pkl")
 saveModel(model_tune[0], path_model)
+
+# _________________20/12_____________________
+
+# -------------------------- train in count, word2vec---------------
+path_count = os.path.join(project_root,"fraud-detection-post","models","Preprocess_count_data.pkl")
+path_count_pipe = os.path.join(project_root,"fraud-detection-post","models","Preprocess_count_pipeline.pkl")
+path_word2vec = os.path.join(project_root,"fraud-detection-post","models","Preprocess_word2vec_data.pkl")
+path_word2vec_pipe = os.path.join(project_root,"fraud-detection-post","models","Preprocess_word2vec_pipeline.pkl")
+
+pre_count = joblib.load(path_count_pipe)
+X_test = pre_count.transform(x_test)
+x_count , y_count =  joblib.load(path_count)
+xcount_smote,ycount_smote = smote_pipeline(x_count,y_count)
+model_count = trainModel(x_count,y_count,"lr")
+evl_count = Metric(model_count,X_test,y_test)
+evl_count.evaluate_model("lr",0.3) # -> 0.89
+
+# smote 
+ml_count_smote = trainModel(xcount_smote,ycount_smote,"lr")
+evl_count_smote = Metric(ml_count_smote,X_test,y_test)
+evl_count_smote.evaluate_model("lr",0.1) # -> 0.87
+
+# under-smote 
+xcount_muti , ycount_muti = smote_under_pipeline(x_count,y_count)
+model_count_muti = trainModel(xcount_muti,ycount_muti,"lr")
+evl_muti = Metric(model_count_muti,X_test,y_test)
+evl_muti.evaluate_model("lr",0.5) # -> 0.84
+
+# -----------------------------------word2vec--------------------
+x_2,y_2 = joblib.load(path_word2vec)
+pre_2vec = joblib.load(path_word2vec_pipe)
+X_test = pre_2vec.transform(x_test)
+
+ml_2vec = trainModel(x_2,y_2,"lr")
+evl_muti = Metric(ml_2vec,X_test,y_test)
+evl_muti.evaluate_model("lr",0.5) # -> 0.54
+
+x_2_smote , y_2_smote = smote_pipeline(x_2,y_2)
+ml_2sm = trainModel(x_2_smote,y_2_smote,"lr")
+evl_muti = Metric(ml_2sm,X_test,y_test)
+evl_muti.evaluate_model("lr",0.5) # 0.41
+
+x_2_muti, y_2_muti = smote_under_pipeline(x_2,y_2)
+ml_2muti = trainModel(x_2_muti,y_2_muti,"lr")
+evl_muti = Metric(ml_2muti,X_test,y_test)
+evl_muti.evaluate_model("lr",0.5) # 0.43
+
+# dùng count và smmote  cho ra khả năng dự đoán tốt nhất giờ ta sẽ tune model để xem thử 
+param_rcv = {
+    "C": [0.01, 0.1, 1, 10, 100],
+    "penalty": ["l1", "l2"],
+    "solver": ["liblinear", "saga"]
+    } 
+model_tune_count = tuneModel(xcount_smote,ycount_smote,"lr",param_rcv,"rcv",n_iter = 50)
+eval_tune_count_rcv = Metric(model_tune_count[0], X_test,y_test)
+eval_tune_count_rcv.evaluate_model("lr",0.5)
+print(model_tune_count[1])
+param_otp = { 
+    "C": {"type": "float", "low": 0.001, "high": 100, "log": True},
+    "penalty": ["l1", "l2"],
+      "solver": ["saga"]
+    }
+model_tune_count_otp = tuneModel(xcount_smote,ycount_smote,"lr",param_otp,"opt",n_trials = 50)
+evl_opt = Metric(model_tune_count_otp[0],X_test,y_test)
+evl_opt.evaluate_model("lr",0.3) # -> 0.88 
+# lưu mô hình cao nhất của count 
+path_model = os.path.join(project_root,"fraud-detection-post","models","model_lr_count.pkl")
+saveModel(model_count,path_model) 
+
+
