@@ -3,3 +3,4 @@
 /feature_engineering.py
 /text_cleaner.py
 /vectorizers.py
+*.spydata
