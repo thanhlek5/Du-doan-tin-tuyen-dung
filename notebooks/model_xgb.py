@@ -216,3 +216,124 @@ eval_tfg.evaluate_model("xgb",0.5)
 #PR-AUC (AUPRC): 0.9263 (Quan trọng cho Fraud)
 print(tune_tfg[1])
 
+#-----------------------word2vec---------------------
+x_2v,y_2v = get_dataword2vec()
+x_te2v = trans_data(x_test,"word2vec")
+
+model_2v = trainModel(x_2v,y_2v,"xgb")
+eval_2v = Metric(model_2v,x_te2v,y_test)
+eval_2v.evaluate_model("xgb")
+#--- ĐÁNH GIÁ: XGB (Threshold=0.5) ---
+#              precision    recall  f1-score   support
+#
+#           0       0.98      1.00      0.99      3403
+#           1       0.96      0.60      0.74       173
+#
+#    accuracy                           0.98      3576
+#   macro avg       0.97      0.80      0.86      3576
+#weighted avg       0.98      0.98      0.98      3576
+#
+#ROC-AUC: 0.9723
+#PR-AUC (AUPRC): 0.8576 (Quan trọng cho Fraud)
+
+x_2sm,y_2sm = smote_pipeline(x_2v,y_2v)
+x_2su,y_2su = smote_under_pipeline(x_2v,y_2v)
+
+model_2sm = trainModel(x_2sm,y_2sm,"xgb")
+eval_2sm = Metric(model_2sm,x_te2v,y_test)
+eval_2sm.evaluate_model("xgb")
+#--- ĐÁNH GIÁ: XGB (Threshold=0.5) ---
+#              precision    recall  f1-score   support
+#
+#           0       0.99      0.99      0.99      3403
+#           1       0.85      0.73      0.79       173
+#
+#    accuracy                           0.98      3576
+#   macro avg       0.92      0.86      0.89      3576
+#weighted avg       0.98      0.98      0.98      3576
+#
+#ROC-AUC: 0.9691
+#PR-AUC (AUPRC): 0.8459 (Quan trọng cho Fraud)
+
+model_2su = trainModel(x_2su,y_2su,"xgb")
+eval_2su = Metric(model_2su,x_te2v,y_test)
+eval_2su.evaluate_model("xgb")
+#--- ĐÁNH GIÁ: XGB (Threshold=0.5) ---
+#              precision    recall  f1-score   support
+#
+#           0       0.99      0.97      0.98      3403
+#           1       0.59      0.82      0.69       173
+#
+#    accuracy                           0.96      3576
+#   macro avg       0.79      0.89      0.83      3576
+#weighted avg       0.97      0.96      0.97      3576
+#
+#ROC-AUC: 0.9695
+#PR-AUC (AUPRC): 0.8201 (Quan trọng cho Fraud)
+
+tune_2vr = tuneModel(x_2v,y_2v,"xgb",param_rcv,"rcv",n_iter = 50)
+eval_tune2r = Metric(tune_2vr[0],x_te2v,y_test)
+eval_tune2r.evaluate_model("xgb")
+#--- ĐÁNH GIÁ: XGB (Threshold=0.5) ---
+#              precision    recall  f1-score   support
+#
+#           0       0.99      1.00      0.99      3403
+#           1       0.90      0.71      0.79       173
+#
+#    accuracy                           0.98      3576
+#   macro avg       0.94      0.85      0.89      3576
+#weighted avg       0.98      0.98      0.98      3576
+#
+#ROC-AUC: 0.9750
+#PR-AUC (AUPRC): 0.8652 (Quan trọng cho Fraud)
+print(tune_2vr[1])
+param_gcv = {
+    "n_estimators": [500],
+    "learning_rate":[0.1],
+    "max_depth":[8,10,12],
+    "min_child_weight": [3,5,7],
+    "scale_pos_weight":[10,30,50]
+    }
+tune_2vg = tuneModel(x_2v,y_2v,"xgb",param_gcv,"gcv")
+eval_tune2g = Metric(tune_2vg[0],x_te2v,y_test)
+eval_tune2g.evaluate_model("xgb")
+#--- ĐÁNH GIÁ: XGB (Threshold=0.5) ---
+#              precision    recall  f1-score   support
+#
+#           0       0.99      1.00      0.99      3403
+#           1       0.90      0.72      0.80       173
+#
+#    accuracy                           0.98      3576
+#   macro avg       0.94      0.86      0.89      3576
+#weighted avg       0.98      0.98      0.98      3576
+#
+#ROC-AUC: 0.9756
+#PR-AUC (AUPRC): 0.8662 (Quan trọng cho Fraud)
+param_opt = {
+            "n_estimators": {"type": "int", "low": 100, "high": 1000, "step": 100},
+            "learning_rate": {"type": "float", "low": 0.01, "high": 0.3, "log": True},
+            "max_depth": {"type": "int", "low": 3, "high": 12},
+            "subsample": {"type": "float", "low": 0.5, "high": 1.0, "step": 0.1},
+            "colsample_bytree": {"type": "float", "low": 0.5, "high": 1.0, "step": 0.1},
+            "min_child_weight": {"type": "int", "low": 1, "high": 7},
+            "scale_pos_weight": {"type": "float", "low": 1, "high": 100, "log": True} 
+            }   
+tune_2vo = tuneModel(x_2v,y_2v,"xgb",param_opt,"opt",n_trials = 10)
+eval_tune2o = Metric(tune_2vo[0],x_te2v,y_test)
+eval_tune2o.evaluate_model("xgb")
+#--- ĐÁNH GIÁ: XGB (Threshold=0.5) ---
+#              precision    recall  f1-score   support
+#
+#           0       0.99      1.00      0.99      3403
+#           1       0.92      0.72      0.81       173
+#
+#    accuracy                           0.98      3576
+#   macro avg       0.95      0.86      0.90      3576
+#weighted avg       0.98      0.98      0.98      3576
+#
+#ROC-AUC: 0.9721
+#PR-AUC (AUPRC): 0.8605 (Quan trọng cho Fraud)
+path_tf = os.path.join(project_root,"fraud-detection-post","models","model_xgb_tf_tuneg.pkl")
+saveModel(tune_tfg[0],path_tf)
+path_tf = os.path.join(project_root,"fraud-detection-post","configs","param_xgb_tf_tuneg.pkl")
+save_params_to_json(tune_tfg[1],path_tf)

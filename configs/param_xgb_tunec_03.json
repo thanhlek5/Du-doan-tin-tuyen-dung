@@ -1,9 +1,9 @@
 {
-    "subsmaple": 0.5,
+    "subsmaple": 0.7,
     "scale_pos_weight": 50,
     "n_estimators": 500,
-    "min_child_weight": 3,
-    "max_depth": 10,
-    "learning_rate": 0.05,
-    "colsmaple_bytree": 0.7
+    "min_child_weight": 1,
+    "max_depth": 15,
+    "learning_rate": 0.1,
+    "colsmaple_bytree": 0.5
 }
