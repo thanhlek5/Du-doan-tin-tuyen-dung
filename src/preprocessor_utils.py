@@ -21,14 +21,14 @@ def load_preprocess(path:str) -> Any:
 
 
 def get_dataCount():
-    path = os.path.join(project_root,'fraud-detection-post',"models","Preprocess_count_data.pkl")
+    path = os.path.join(project_root,"models","Preprocess_count_data.pkl")
     if not os.path.exists(path):
         print(f"this path does not exists { path}")
     pre = joblib.load(path)
     return pre[0],pre[1]
 
 def get_datatfidf():
-    path = os.path.join(project_root,'fraud-detection-post',"models","Preprocess_tfidf_data.pkl")
+    path = os.path.join(project_root,"models","Preprocess_tfidf_data.pkl")
     if not os.path.exists(path):
         print(f"this path does not exists { path}")
     pre = joblib.load(path)
@@ -36,7 +36,7 @@ def get_datatfidf():
     
     
 def get_dataword2vec():
-    path = os.path.join(project_root,'fraud-detection-post',"models","Preprocess_word2vec_data.pkl")
+    path = os.path.join(project_root,"models","Preprocess_word2vec_data.pkl")
     if not os.path.exists(path):
         print(f"this path does not exists { path}")
     pre = joblib.load(path)
@@ -45,10 +45,12 @@ def get_dataword2vec():
 def trans_data(x,name):
     name = name.lower()
     if name == "count":
-        path = os.path.join(project_root,'fraud-detection-post',"models","Preprocess_count_pipeline.pkl") 
+        path = os.path.join(project_root,"models","Preprocess_count_pipeline.pkl") 
     if name == "tfidf":
-        path = os.path.join(project_root,'fraud-detection-post',"models","Preprocess_tfidf_pipeline.pkl")  
+        path = os.path.join(project_root,"models","Preprocess_tfidf_pipeline.pkl")  
     if name == "word2vec":
-        path = os.path.join(project_root,'fraud-detection-post',"models","Preprocess_word2vec_pipeline.pkl")  
+        path = os.path.join(project_root,"models","Preprocess_word2vec_pipeline.pkl")  
     pre = joblib.load(path)
     return pre.transform(x)
+
+# ,'fraud-detection-post'
