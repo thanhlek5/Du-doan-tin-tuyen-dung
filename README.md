@@ -16,10 +16,10 @@ Dữ liệu bao gồm 17.880 tin tuyển dụng thực tế, trong đó có kho�
 ### Câu hỏi nghiên cứu
 + Thuật toán máy học nào cho hiệu suất cao nhất trong việc phân loại tin tuyển dụng.
 + Làm thế nào để cân bằng giữa chỉ số precision và recall -> dùng f1 và PR-AUC
-+ Việc áp dụng các kỹ thuật tái lấy mẫu như smote thì liệu có ảnh hưởng như thế nào đến khả năng phát hiện tin giả của mô hình.
-+ Những đặc trưng chủ yếu về văn bản hoặc từ khóa (keywords) nào mang tính phân biệt cao nhất giúp nhận diện một tin tuyển dụng giả mạo.
-+ Phương pháp trích xuất đặc trung nào (TF-IDF, Count Vectorized, Word Embeddings như Word2Vec/BERT) mang lại đầu vào tốt nhất cho mô hình phân loại trong ngữ cảnh này.
-+ Làm thế nào để giải thích lý do mô hình đánh dấu một tin giả mạo để người dùng cuối tin tưởng -> dùng biểu đồ của SHAP (waterfall, Beeswarm)
++ Việc áp dụng các kỹ thuật tái lấy mẫu như smote thì liệu có ảnh hưởng như thế nào đến khả năng phát hiện tin giả của mô hình. 
++ Những đặc trưng chủ yếu về văn bản hoặc từ khóa (keywords) nào mang tính phân biệt cao nhất giúp nhận diện một tin tuyển dụng giả mạo. -> EDA
++ Phương pháp trích xuất đặc trung nào (TF-IDF, Count Vectorized, Word Embeddings như Word2Vec/BERT) mang lại đầu vào tốt nhất cho mô hình phân loại trong ngữ cảnh này. -> CountVector
+
 
 ### Các phần cần được xử lý:
 + tiền xử lý dữ liệu.
