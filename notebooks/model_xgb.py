@@ -333,6 +333,8 @@ eval_tune2o.evaluate_model("xgb")
 #
 #ROC-AUC: 0.9721
 #PR-AUC (AUPRC): 0.8605 (Quan trọng cho Fraud)
+path_w2v = os.path.join(project_root,"fraud-detection-post","models","model_xgb_w2v_tuneg.pkl")
+saveModel(tune_2vg[0],path_w2v)
 path_tf = os.path.join(project_root,"fraud-detection-post","models","model_xgb_tf_tuneg.pkl")
 saveModel(tune_tfg[0],path_tf)
 path_tf = os.path.join(project_root,"fraud-detection-post","configs","param_xgb_tf_tuneg.pkl")
